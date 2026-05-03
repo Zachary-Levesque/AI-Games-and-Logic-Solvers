@@ -24,7 +24,7 @@ def crawl(directory):
     """
     Parse a directory of HTML pages and check for links to other pages.
     Return a dictionary where each key is a page, and values are
-    a list of all other pages in the corpus that are linked to by the page.
+    a set of all other pages in the corpus that are linked to by the page.
     """
     pages = dict()
 

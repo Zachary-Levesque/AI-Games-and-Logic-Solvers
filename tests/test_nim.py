@@ -11,7 +11,7 @@ def test_q_learning_update_uses_reward_and_future_value():
 
     ai.update([1, 1], (0, 1), [0, 1], reward=1)
 
-    assert ai.q[((1, 1), (0, 1))] == 0.9
+    assert abs(ai.q[((1, 1), (0, 1))] - 0.9) < 1e-9
 
 
 def test_choose_action_prefers_best_known_action_without_epsilon():

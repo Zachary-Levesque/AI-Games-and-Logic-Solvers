@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run automated tests
+        run: python -m pytest
+
+      - name: Smoke test CLI projects
+        run: |
+          python "PageRank Simulation/pagerank.py" "PageRank Simulation/corpus0"
+          python "Knights and Knaves Solver/puzzle.py"
+          python "Crossword AI/generate.py" "Crossword AI/data/structure0.txt" "Crossword AI/data/words0.txt" /tmp/crossword.png

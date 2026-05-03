@@ -1,4 +1,10 @@
 from nim import train, play
 
-ai = train(10000)
-play(ai)
+
+def main():
+    ai = train(10000)
+    play(ai)
+
+
+if __name__ == "__main__":
+    main()

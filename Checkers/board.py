@@ -51,7 +51,7 @@ class Board:
         piece.row, piece.col = row, col
         
         # Check for king promotion
-        if row == 7 or row == 0:
+        if not piece.king and (row == 7 or row == 0):
             piece.make_king()
             if piece.color == 'white':
                 self.white_kings += 1
@@ -76,7 +76,8 @@ class Board:
         
         return moves
     
-    def _traverse_left(self, start, stop, step, color, left, skipped=[]):
+    def _traverse_left(self, start, stop, step, color, left, skipped=None):
+        skipped = skipped or []
         moves = {}
         last = []
         for r in range(start, stop, step):
@@ -97,8 +98,9 @@ class Board:
                         row = max(r - 3, 0)
                     else:
                         row = min(r + 3, 8)
-                    moves.update(self._traverse_left(r + step, row, step, color, left - 1, skipped=last))
-                    moves.update(self._traverse_right(r + step, row, step, color, left + 1, skipped=last))
+                    next_skipped = last + skipped
+                    moves.update(self._traverse_left(r + step, row, step, color, left - 1, skipped=next_skipped))
+                    moves.update(self._traverse_right(r + step, row, step, color, left + 1, skipped=next_skipped))
                 break
             elif current.color == color:
                 break
@@ -109,7 +111,8 @@ class Board:
         
         return moves
     
-    def _traverse_right(self, start, stop, step, color, right, skipped=[]):
+    def _traverse_right(self, start, stop, step, color, right, skipped=None):
+        skipped = skipped or []
         moves = {}
         last = []
         for r in range(start, stop, step):
@@ -130,8 +133,9 @@ class Board:
                         row = max(r - 3, 0)
                     else:
                         row = min(r + 3, 8)
-                    moves.update(self._traverse_left(r + step, row, step, color, right - 1, skipped=last))
-                    moves.update(self._traverse_right(r + step, row, step, color, right + 1, skipped=last))
+                    next_skipped = last + skipped
+                    moves.update(self._traverse_left(r + step, row, step, color, right - 1, skipped=next_skipped))
+                    moves.update(self._traverse_right(r + step, row, step, color, right + 1, skipped=next_skipped))
                 break
             elif current.color == color:
                 break
@@ -156,6 +160,10 @@ class Board:
             return 'white'
         elif self.white_left <= 0:
             return 'red'
+        elif not self.has_moves('white'):
+            return 'red'
+        elif not self.has_moves('red'):
+            return 'white'
         
         return None
     
@@ -166,6 +174,9 @@ class Board:
                 if piece != 0 and piece.color == color:
                     pieces.append(piece)
         return pieces
+
+    def has_moves(self, color):
+        return any(self.get_valid_moves(piece) for piece in self.get_all_pieces(color))
     
     def evaluate(self):
         return self.white_left - self.red_left + (self.white_kings * 0.5 - self.red_kings * 0.5)

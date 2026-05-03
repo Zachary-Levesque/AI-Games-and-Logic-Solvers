@@ -9,7 +9,7 @@ class CrosswordCreator():
 
     def __init__(self, crossword):
         """
-        Create new CSP crossword generate.
+        Create a new CSP crossword generator.
         """
         self.crossword = crossword
         self.domains = {

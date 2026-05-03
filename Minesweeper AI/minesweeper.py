@@ -188,31 +188,68 @@ class MinesweeperAI():
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
-        
         self.moves_made.add(cell)
         self.mark_safe(cell)
-        undeterminedCells = []
-        countMines=0
-        for i in range(cell[0]-1, cell[0]+2):
-            for j in range (cell[1]-1, cell[1]+2):
-                if (i,j) in self.mines:
-                    countMines +=1
-                if 0<=i< self.height and 0<=j<self.width and (i,j) not in self.safes and (i,j) not in self.mines:
-                    undeterminedCells.append((i,j))
-        newSentence = Sentence(undeterminedCells, count-countMines)
-        self.knowledge.append(newSentence)
-        for sentence in self.knowledge:
-            if sentence.known_mines():
-                for cell in sentence.known_mines().copy():
-                    self.mark_mine(cell)
-            if sentence.known_safes():
-                for cell in sentence.known_safes().copy():
-                    self.mark_safe(cell)
-        for sentence in self.knowledge:
-            if newSentence.cells.issubset(sentence.cells) and sentence.count >0 and newSentence.count >0 and newSentence != sentence:
-                newSubset = sentence.cells.difference(newSentence.cells)
-                newSentenceSubset=Sentence(list(newSubset), sentence.count-newSentence.count)
-                self.knowledge.append(newSentenceSubset)
+        neighboring_cells = set()
+        known_neighbor_mines = 0
+        for i in range(cell[0] - 1, cell[0] + 2):
+            for j in range(cell[1] - 1, cell[1] + 2):
+                if (i, j) == cell:
+                    continue
+                if 0 <= i < self.height and 0 <= j < self.width:
+                    if (i, j) in self.mines:
+                        known_neighbor_mines += 1
+                    elif (i, j) not in self.safes:
+                        neighboring_cells.add((i, j))
+
+        sentence = Sentence(neighboring_cells, count - known_neighbor_mines)
+        if sentence.cells and sentence not in self.knowledge:
+            self.knowledge.append(sentence)
+
+        self._infer_knowledge()
+
+    def _infer_knowledge(self):
+        changed = True
+        while changed:
+            changed = False
+
+            known_mines = set()
+            known_safes = set()
+            for sentence in self.knowledge:
+                known_mines |= sentence.known_mines()
+                known_safes |= sentence.known_safes()
+
+            for mine in known_mines - self.mines:
+                self.mark_mine(mine)
+                changed = True
+            for safe in known_safes - self.safes:
+                self.mark_safe(safe)
+                changed = True
+
+            filtered_knowledge = []
+            for sentence in self.knowledge:
+                if sentence.cells and sentence not in filtered_knowledge:
+                    filtered_knowledge.append(sentence)
+            if len(filtered_knowledge) != len(self.knowledge):
+                changed = True
+            self.knowledge = filtered_knowledge
+
+            inferred_sentences = []
+            for first, second in itertools.permutations(self.knowledge, 2):
+                if not first.cells or not second.cells or first == second:
+                    continue
+                if first.cells < second.cells:
+                    diff_cells = second.cells - first.cells
+                    diff_count = second.count - first.count
+                    if diff_count < 0:
+                        continue
+                    inferred = Sentence(diff_cells, diff_count)
+                    if inferred.cells and inferred not in self.knowledge and inferred not in inferred_sentences:
+                        inferred_sentences.append(inferred)
+
+            if inferred_sentences:
+                self.knowledge.extend(inferred_sentences)
+                changed = True
 
     def make_safe_move(self):
         """

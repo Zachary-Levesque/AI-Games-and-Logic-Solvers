@@ -66,6 +66,14 @@ python3 "Minesweeper AI/runner.py"
 python3 -m pytest
 ```
 
+For a fuller local validation pass, run:
+
+```bash
+python3 "PageRank Simulation/pagerank.py" "PageRank Simulation/corpus0"
+python3 "Knights and Knaves Solver/puzzle.py"
+python3 "Crossword AI/generate.py" "Crossword AI/data/structure0.txt" "Crossword AI/data/words0.txt" /tmp/crossword.png
+```
+
 The automated tests cover representative correctness checks for every algorithm family in the repository, including:
 
 - optimal move selection in Tic-Tac-Toe
@@ -79,6 +87,7 @@ The automated tests cover representative correctness checks for every algorithm 
 ## Engineering Improvements Added
 
 - Root-level `pyproject.toml` with dependencies and pytest configuration.
+- GitHub Actions CI for repeatable verification on pushes and pull requests.
 - Automated tests in `tests/`.
 - Safer and more deterministic search behavior in Tic-Tac-Toe.
 - Stronger inference closure in Minesweeper.
@@ -89,4 +98,5 @@ The automated tests cover representative correctness checks for every algorithm 
 ## Notes
 
 - The interactive `pygame` projects require a local desktop environment.
+- The `pygame` runners now resolve assets relative to their own directories, so launching them from the repository root works correctly.
 - The repository intentionally keeps the original project directories so each AI example remains easy to inspect independently.

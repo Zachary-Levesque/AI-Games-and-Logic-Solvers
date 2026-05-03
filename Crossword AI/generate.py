@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 
 from crossword import *
@@ -62,7 +63,8 @@ class CrosswordCreator():
              self.crossword.height * cell_size),
             "black"
         )
-        font = ImageFont.truetype("assets/fonts/OpenSans-Regular.ttf", 80)
+        font_path = Path(__file__).resolve().parent / "assets" / "fonts" / "OpenSans-Regular.ttf"
+        font = ImageFont.truetype(str(font_path), 80)
         draw = ImageDraw.Draw(img)
 
         for i in range(self.crossword.height):
@@ -77,7 +79,9 @@ class CrosswordCreator():
                 if self.crossword.structure[i][j]:
                     draw.rectangle(rect, fill="white")
                     if letters[i][j]:
-                        w, h = draw.textsize(letters[i][j], font=font)
+                        bbox = draw.textbbox((0, 0), letters[i][j], font=font)
+                        w = bbox[2] - bbox[0]
+                        h = bbox[3] - bbox[1]
                         draw.text(
                             (rect[0][0] + ((interior_size - w) / 2),
                              rect[0][1] + ((interior_size - h) / 2) - 10),
@@ -101,13 +105,8 @@ class CrosswordCreator():
          constraints; in this case, the length of the word.)
         """
 
-        for var in self.domains:
-            node_consistent_words = []
-            for word in self.domains[var]:
-                if len(word) == var.length:
-                    node_consistent_words.append(word)
-
-            self.domains[var] = node_consistent_words
+        for var, words in self.domains.items():
+            self.domains[var] = {word for word in words if len(word) == var.length}
 
     def revise(self, x, y):
         """
@@ -118,24 +117,22 @@ class CrosswordCreator():
         Return True if a revision was made to the domain of `x`; return
         False if no revision was made.
         """
-        revision = False
-        possible_var_pairs = []
-        for vars in self.crossword.overlaps:
-            if self.crossword.overlaps[vars] and vars[0] == x:
-                possible_var_pairs.append(vars)
+        overlap = self.crossword.overlaps.get((x, y))
+        if overlap is None:
+            return False
 
-        for (x, y) in possible_var_pairs:
-            cors = self.crossword.overlaps[(x, y)]
-            for x_word in self.domains[x]:
-                match = False
-                for y_word in self.domains[y]:
-                    if x_word[cors[0]] == y_word[cors[1]]:
-                        match = True
-                if not match:
-                    self.domains[x].remove(x_word)
-                    revision = True
+        x_index, y_index = overlap
+        revised = False
+        removable = set()
+        for x_word in self.domains[x]:
+            if not any(x_word[x_index] == y_word[y_index] for y_word in self.domains[y]):
+                removable.add(x_word)
 
-        return revision
+        if removable:
+            self.domains[x] -= removable
+            revised = True
+
+        return revised
 
     def ac3(self, arcs=None):
         """
@@ -146,15 +143,11 @@ class CrosswordCreator():
         Return True if arc consistency is enforced and no domains are empty;
         return False if one or more domains end up empty.
         """
-        queue = []
-        if arcs == None:
-            for var in self.domains:
-                neighbors = self.crossword.neighbors(var)
-                for n in neighbors:
-                    queue.append((var, n))
-        else:
-            queue = arcs
-
+        queue = list(arcs) if arcs is not None else [
+            (var, neighbor)
+            for var in self.domains
+            for neighbor in self.crossword.neighbors(var)
+        ]
 
         while queue:
             (x, y) = queue.pop(0)
@@ -210,18 +203,18 @@ class CrosswordCreator():
         """
         word_cost = []
 
-        for i, word in enumerate(self.domains[var]):
-            word_cost.append([word, 0])
+        for word in self.domains[var]:
+            eliminated = 0
             unassigned_neighbors = list(filter(lambda neighbor: neighbor not in assignment , self.crossword.neighbors(var)))
             for neighbor in unassigned_neighbors:
                 for n_word in self.domains[neighbor]:
                     cors = self.crossword.overlaps[(var, neighbor)]
                     if len(word) > cors[0] and len(n_word) > cors[1]:
                         if word[cors[0]] != n_word[cors[1]]:
-                            word_cost[i][1] += 1
+                            eliminated += 1
+            word_cost.append((word, eliminated))
 
-        # var_words = list(sorted(word_cost, key=lambda word: word_cost[word]))
-        sorted_word_cost = sorted(word_cost, key=lambda word: word[1])
+        sorted_word_cost = sorted(word_cost, key=lambda item: item[1])
         ordered_domain_values = list(map(lambda word: word[0], sorted_word_cost))
 
         return ordered_domain_values

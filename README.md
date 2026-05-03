@@ -1,6 +1,6 @@
 # AI Games and Logic Solvers
 
-A portfolio repository of classical AI systems implemented in Python across adversarial search, reinforcement learning, logical inference, constraint satisfaction, and probabilistic ranking.
+A portfolio repository of classical AI systems implemented in Python using adversarial search, reinforcement learning, logical inference, constraint satisfaction, and probabilistic ranking.
 
 The project includes:
 
@@ -14,7 +14,7 @@ The project includes:
 
 ## Why This Repo Matters
 
-This codebase demonstrates breadth across core AI techniques rather than a single model demo. It is useful as a resume project because it shows:
+This codebase demonstrates core AI techniques that demonstrate:
 
 - Search and game-playing algorithms with deterministic evaluation.
 - Reinforcement learning fundamentals with Q-value updates.
@@ -73,27 +73,6 @@ python3 "PageRank Simulation/pagerank.py" "PageRank Simulation/corpus0"
 python3 "Knights and Knaves Solver/puzzle.py"
 python3 "Crossword AI/generate.py" "Crossword AI/data/structure0.txt" "Crossword AI/data/words0.txt" /tmp/crossword.png
 ```
-
-The automated tests cover representative correctness checks for every algorithm family in the repository, including:
-
-- optimal move selection in Tic-Tac-Toe
-- Minesweeper inference propagation
-- Q-learning update behavior in Nim
-- PageRank probability normalization
-- crossword solving and image export
-- logical entailment in Knights and Knaves
-- checkers evaluation edge cases
-
-## Engineering Improvements Added
-
-- Root-level `pyproject.toml` with dependencies and pytest configuration.
-- GitHub Actions CI for repeatable verification on pushes and pull requests.
-- Automated tests in `tests/`.
-- Safer and more deterministic search behavior in Tic-Tac-Toe.
-- Stronger inference closure in Minesweeper.
-- Corrected crossword domain revision and portable asset loading.
-- Checkers endgame and king-promotion fixes.
-- Repository hygiene via `.gitignore`.
 
 ## Notes
 

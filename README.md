@@ -1,6 +1,6 @@
 # AI Games and Logic Solvers
 
-A portfolio repository of classical AI systems implemented in Python using adversarial search, reinforcement learning, logical inference, constraint satisfaction, and probabilistic ranking.
+A portfolio repository of classical AI systems implemented in Python using artificial intelligence and machine learning.
 
 The project includes:
 
@@ -14,28 +14,23 @@ The project includes:
 
 ## Why This Repo Matters
 
-This codebase demonstrates core AI techniques that demonstrate:
+- Implements core AI paradigms from first principles:
+  - Search (minimax, alpha-beta pruning)
+  - Reinforcement learning (Q-learning)
+  - Symbolic reasoning (logic, model checking)
+  - Constraint satisfaction (CSPs)
+  - Probabilistic modeling (PageRank)
 
-- Search and game-playing algorithms with deterministic evaluation.
-- Reinforcement learning fundamentals with Q-value updates.
-- Symbolic reasoning and logical entailment.
-- Constraint propagation and backtracking heuristics.
-- Probabilistic modeling and convergence-based ranking.
-- End-to-end engineering discipline with tests, reproducible setup, and documentation.
+- Emphasizes **understanding over abstraction**:
+  - No reliance on high-level AI libraries
+  - Clear visibility into how algorithms actually work
 
-## Repository Layout
+- Builds strong, transferable skills:
+  - Algorithmic thinking
+  - Problem decomposition
+  - System design fundamentals
 
-```text
-.
-├── Checkers/
-├── Crossword AI/
-├── Knights and Knaves Solver/
-├── Minesweeper AI/
-├── Nim/
-├── PageRank Simulation/
-├── Tic Tac Toe AI/
-└── tests/
-```
+- Demonstrates the ability to go beyond using AI tools → **engineering intelligent systems from the ground up**
 
 ## Quick Start
 

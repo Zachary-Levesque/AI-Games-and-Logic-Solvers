@@ -1,23 +1,92 @@
 # AI Games and Logic Solvers
-Developed a collection of AI programs in python designed to play games and solve logical problems using principles from game theory, artificial intelligence and machine learning. This suite of projects showcases a wide range of AI techniques including search algorithms, constraint satisfaction, inference, and probabilistic modeling.
 
-## Checkers AI: 
-Built an AI that plays optimal checkers moves
+A portfolio repository of classical AI systems implemented in Python across adversarial search, reinforcement learning, logical inference, constraint satisfaction, and probabilistic ranking.
 
-## PageRank Simulation: 
-Implemented a simplified AI model of Google's PageRank to determine the importance of web pages.
+The project includes:
 
-## Knights and Knaves Solver: 
-Created a logic inference engine to solve classic Knights and Knaves puzzles.
+- `Tic Tac Toe AI`: perfect-play minimax with alpha-beta pruning.
+- `Minesweeper AI`: knowledge-based inference over sentence constraints.
+- `Nim`: self-play Q-learning agent.
+- `Checkers`: adversarial search with alpha-beta pruning.
+- `Crossword AI`: crossword generation via CSP backtracking and arc consistency.
+- `Knights and Knaves Solver`: propositional logic model checking.
+- `PageRank Simulation`: sampling and iterative PageRank estimation.
 
-## Minesweeper AI: 
-Designed an AI that strategically reveals cells using probabilistic reasoning and constraint satisfaction.
+## Why This Repo Matters
 
-## Tic-Tac-Toe AI: 
-Developed a perfect-play AI using the minimax algorithm for a turn-based zero-sum game.
+This codebase demonstrates breadth across core AI techniques rather than a single model demo. It is useful as a resume project because it shows:
 
-## Crossword AI: 
-Developed an AI capable of solving crossword puzzles using constraint satisfaction
+- Search and game-playing algorithms with deterministic evaluation.
+- Reinforcement learning fundamentals with Q-value updates.
+- Symbolic reasoning and logical entailment.
+- Constraint propagation and backtracking heuristics.
+- Probabilistic modeling and convergence-based ranking.
+- End-to-end engineering discipline with tests, reproducible setup, and documentation.
 
-## Nim: 
-Built an AI that teaches itself to play Nim through reinforcement learning
+## Repository Layout
+
+```text
+.
+├── Checkers/
+├── Crossword AI/
+├── Knights and Knaves Solver/
+├── Minesweeper AI/
+├── Nim/
+├── PageRank Simulation/
+├── Tic Tac Toe AI/
+└── tests/
+```
+
+## Quick Start
+
+1. Create and activate a virtual environment.
+2. Install the project in editable mode with development tooling.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+## Run The Projects
+
+```bash
+python3 "PageRank Simulation/pagerank.py" "PageRank Simulation/corpus0"
+python3 "Knights and Knaves Solver/puzzle.py"
+python3 "Crossword AI/generate.py" "Crossword AI/data/structure0.txt" "Crossword AI/data/words0.txt"
+python3 "Nim/play.py"
+python3 "Checkers/main.py"
+python3 "Tic Tac Toe AI/runner.py"
+python3 "Minesweeper AI/runner.py"
+```
+
+## Test Suite
+
+```bash
+python3 -m pytest
+```
+
+The automated tests cover representative correctness checks for every algorithm family in the repository, including:
+
+- optimal move selection in Tic-Tac-Toe
+- Minesweeper inference propagation
+- Q-learning update behavior in Nim
+- PageRank probability normalization
+- crossword solving and image export
+- logical entailment in Knights and Knaves
+- checkers evaluation edge cases
+
+## Engineering Improvements Added
+
+- Root-level `pyproject.toml` with dependencies and pytest configuration.
+- Automated tests in `tests/`.
+- Safer and more deterministic search behavior in Tic-Tac-Toe.
+- Stronger inference closure in Minesweeper.
+- Corrected crossword domain revision and portable asset loading.
+- Checkers endgame and king-promotion fixes.
+- Repository hygiene via `.gitignore`.
+
+## Notes
+
+- The interactive `pygame` projects require a local desktop environment.
+- The repository intentionally keeps the original project directories so each AI example remains easy to inspect independently.

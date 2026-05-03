@@ -1,5 +1,3 @@
-import math
-
 X = "X"
 O = "O"
 EMPTY = None  # Use None as the marker for empty cells
@@ -42,8 +40,10 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    new_board = [row[:] for row in board]
     i, j = action
+    if i not in range(3) or j not in range(3):
+        raise ValueError("Invalid move: coordinates out of bounds.")
+    new_board = [row[:] for row in board]
     if new_board[i][j] != EMPTY:
         raise ValueError("Invalid move: Cell is not empty.")
     current_player = player(board)
@@ -102,39 +102,41 @@ def minimax(board):
 
     current = player(board)
 
-    # Helper to find the max value and best move for X
-    def max_value(board):
+    def ordered_actions(board):
+        return sorted(actions(board))
+
+    def max_value(board, alpha, beta):
         if terminal(board):
             return utility(board), None
-        v = float('-inf')
+        v = float("-inf")
         best_move = None
-        for action in actions(board):
-            min_result, _ = min_value(result(board, action))
+        for action in ordered_actions(board):
+            min_result, _ = min_value(result(board, action), alpha, beta)
             if min_result > v:
                 v = min_result
                 best_move = action
-                if v == 1:  # Early exit: best possible outcome
-                    break
+            alpha = max(alpha, v)
+            if alpha >= beta:
+                break
         return v, best_move
 
-    # Helper to find the min value and best move for O
-    def min_value(board):
+    def min_value(board, alpha, beta):
         if terminal(board):
             return utility(board), None
-        v = float('inf')
+        v = float("inf")
         best_move = None
-        for action in actions(board):
-            max_result, _ = max_value(result(board, action))
+        for action in ordered_actions(board):
+            max_result, _ = max_value(result(board, action), alpha, beta)
             if max_result < v:
                 v = max_result
                 best_move = action
-                if v == -1:  # Early exit
-                    break
+            beta = min(beta, v)
+            if alpha >= beta:
+                break
         return v, best_move
 
-    # Call the appropriate helper based on who's playing
     if current == X:
-        _, move = max_value(board)
+        _, move = max_value(board, float("-inf"), float("inf"))
     else:
-        _, move = min_value(board)
+        _, move = min_value(board, float("-inf"), float("inf"))
     return move

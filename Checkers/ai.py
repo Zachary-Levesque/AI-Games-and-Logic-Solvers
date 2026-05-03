@@ -46,7 +46,7 @@ def get_all_moves(board, color, game):
     return moves
 
 def alpha_beta(position, depth, alpha, beta, max_player, game):
-    """Minimax with Alpha-Beta Pruning for better performance"""
+    """Minimax with alpha-beta pruning for better performance."""
     if depth == 0 or position.winner() != None:
         return position.evaluate(), position
     

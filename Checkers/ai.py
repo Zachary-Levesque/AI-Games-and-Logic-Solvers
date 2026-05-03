@@ -1,5 +1,4 @@
 import copy
-from game import Game
 
 def minimax(position, depth, max_player, game):
     if depth == 0 or position.winner() != None:
@@ -54,7 +53,10 @@ def alpha_beta(position, depth, alpha, beta, max_player, game):
     if max_player:
         maxEval = float('-inf')
         best_move = None
-        for move in get_all_moves(position, 'white', game):
+        moves = get_all_moves(position, 'white', game)
+        if not moves:
+            return position.evaluate(), None
+        for move in moves:
             evaluation = alpha_beta(move, depth-1, alpha, beta, False, game)[0]
             if evaluation > maxEval:
                 maxEval = evaluation
@@ -67,7 +69,10 @@ def alpha_beta(position, depth, alpha, beta, max_player, game):
     else:
         minEval = float('inf')
         best_move = None
-        for move in get_all_moves(position, 'red', game):
+        moves = get_all_moves(position, 'red', game)
+        if not moves:
+            return position.evaluate(), None
+        for move in moves:
             evaluation = alpha_beta(move, depth-1, alpha, beta, True, game)[0]
             if evaluation < minEval:
                 minEval = evaluation
